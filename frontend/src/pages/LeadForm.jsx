@@ -43,35 +43,41 @@ function LeadForm() {
 
   const isValid = Object.values(form).every(v => v !== '')
 
-  const inputClass = `w-full bg-white text-stone-800 rounded-none px-4 py-3 text-sm
-    outline-none border-b border-stone-200 focus:border-amber-500 transition duration-300
-    placeholder-stone-300`
+  const inputClass = `w-full bg-gray-50 text-gray-800 rounded-lg px-4 py-3 text-sm
+    outline-none border border-gray-200 focus:border-blue-900 focus:bg-white
+    transition duration-200 placeholder-gray-300`
 
-  const selectClass = `w-full bg-white text-stone-700 rounded-none px-4 py-3 text-sm
-    outline-none border-b border-stone-200 focus:border-amber-500 transition duration-300`
+  const selectClass = `w-full bg-gray-50 text-gray-700 rounded-lg px-4 py-3 text-sm
+    outline-none border border-gray-200 focus:border-blue-900 focus:bg-white
+    transition duration-200`
 
-  const labelClass = `text-xs tracking-widest uppercase text-stone-400 mb-2 block`
+  const labelClass = `text-xs font-medium text-gray-500 mb-1.5 block`
 
   return (
-    <div className="min-h-screen bg-stone-50 flex items-center justify-center px-6 py-16">
-      <div className="w-full max-w-3xl">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-12">
+      <div className="w-full max-w-4xl">
 
         {/* header */}
-        <div className="mb-14 text-center">
-          <p className="text-xs tracking-widest uppercase text-amber-600 mb-3">Begin Your Journey</p>
-          <h1 className="text-5xl font-light text-stone-800 leading-tight mb-4"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Find Your Perfect<br />Coaching Plan
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-900 text-xs
+            font-medium px-4 py-2 rounded-full mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-900 inline-block" />
+            Free Coaching Match
+          </div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-3"
+            style={{ fontFamily: "'Playfair Display', serif" }}>
+            Find Your Perfect Coaching Plan
           </h1>
-          <p className="text-stone-400 text-sm font-light">
-            Answer a few questions. We'll match you with the right coach and package.
+          <p className="text-gray-500 text-sm max-w-md mx-auto">
+            Tell us about your goals and we'll match you with the right coach and package in seconds.
           </p>
         </div>
 
         {/* form card */}
-        <div className="bg-white border border-stone-100 shadow-sm p-10">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
 
-          <div className="grid grid-cols-3 gap-8 mb-8">
+          {/* row 1 */}
+          <div className="grid grid-cols-3 gap-5 mb-5">
             <div>
               <label className={labelClass}>Full Name</label>
               <input name="name" value={form.name} onChange={handleChange}
@@ -89,7 +95,8 @@ function LeadForm() {
             </div>
           </div>
 
-          <div className="mb-8">
+          {/* row 2 */}
+          <div className="mb-5">
             <label className={labelClass}>What is your primary goal?</label>
             <select name="goal" value={form.goal} onChange={handleChange} className={selectClass}>
               <option value="">Select your goal</option>
@@ -101,9 +108,10 @@ function LeadForm() {
             </select>
           </div>
 
-          <div className="grid grid-cols-3 gap-8 mb-8">
+          {/* row 3 */}
+          <div className="grid grid-cols-3 gap-5 mb-5">
             <div>
-              <label className={labelClass}>When to start?</label>
+              <label className={labelClass}>When do you want to start?</label>
               <select name="timeline" value={form.timeline} onChange={handleChange} className={selectClass}>
                 <option value="">Select timeline</option>
                 <option value="immediately">This week</option>
@@ -123,7 +131,7 @@ function LeadForm() {
               </select>
             </div>
             <div>
-              <label className={labelClass}>Coaching Format</label>
+              <label className={labelClass}>Preferred Format</label>
               <select name="format" value={form.format} onChange={handleChange} className={selectClass}>
                 <option value="">Select format</option>
                 <option value="1:1 calls">1:1 Video Calls</option>
@@ -134,7 +142,8 @@ function LeadForm() {
             </div>
           </div>
 
-          <div className="mb-10">
+          {/* row 4 */}
+          <div className="mb-6">
             <label className={labelClass}>How urgent is this for you?</label>
             <select name="urgency" value={form.urgency} onChange={handleChange} className={selectClass}>
               <option value="">Select urgency</option>
@@ -145,22 +154,24 @@ function LeadForm() {
           </div>
 
           {error && (
-            <p className="text-red-400 text-xs tracking-wide mb-6 border-l-2 border-red-300 pl-3">
+            <div className="bg-red-50 border border-red-100 text-red-500 text-sm
+              rounded-lg px-4 py-3 mb-5">
               {error}
-            </p>
+            </div>
           )}
 
           <button
             onClick={handleSubmit}
             disabled={!isValid || loading}
-            className="w-full bg-stone-900 hover:bg-amber-600 disabled:opacity-30
-              text-white text-xs tracking-widest uppercase py-4 transition duration-500 font-medium"
+            className="w-full py-3.5 rounded-lg text-white text-sm font-semibold
+              transition duration-200 hover:opacity-90 disabled:opacity-40"
+            style={{ backgroundColor: '#1e3a5f' }}
           >
             {loading ? 'Analyzing your profile...' : 'Find My Coaching Plan →'}
           </button>
 
-          <p className="text-center text-xs text-stone-300 mt-5 tracking-wide">
-            No commitment required · Completely confidential
+          <p className="text-center text-xs text-gray-400 mt-4">
+            No commitment required · 100% confidential · Free to use
           </p>
 
         </div>

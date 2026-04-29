@@ -27,48 +27,60 @@ function Dashboard() {
   const booked = leads.filter(l => l.status === 'booked').length
   const onboarded = leads.filter(l => l.status === 'onboarded').length
 
+  const stats = [
+    { label: 'Total Leads', value: total, color: 'text-gray-900' },
+    { label: 'Hot Leads', value: hot, color: 'text-red-500' },
+    { label: 'Warm Leads', value: warm, color: 'text-amber-500' },
+    { label: 'Cold Leads', value: cold, color: 'text-blue-400' },
+    { label: 'Booked', value: booked, color: 'text-blue-900' },
+    { label: 'Onboarded', value: onboarded, color: 'text-green-600' },
+  ]
+
   const scoreBadge = {
-    HOT: 'text-emerald-600',
-    WARM: 'text-amber-500',
-    COLD: 'text-stone-400'
+    HOT: 'bg-red-50 text-red-600',
+    WARM: 'bg-amber-50 text-amber-600',
+    COLD: 'bg-blue-50 text-blue-500'
   }
 
   const statusBadge = {
-    new: 'text-blue-400',
-    booked: 'text-violet-500',
-    proposal_sent: 'text-amber-500',
-    onboarded: 'text-emerald-600'
+    new: 'bg-gray-100 text-gray-500',
+    booked: 'bg-blue-50 text-blue-700',
+    proposal_sent: 'bg-amber-50 text-amber-700',
+    onboarded: 'bg-green-50 text-green-700'
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 px-10 py-14">
+    <div className="min-h-screen bg-gray-50 px-8 py-10">
       <div className="max-w-6xl mx-auto">
 
         {/* header */}
-        <div className="mb-12">
-          <p className="text-xs tracking-widest uppercase text-amber-600 mb-2">Coach AI</p>
-          <h1 className="text-4xl font-light text-stone-800"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Lead Dashboard
-          </h1>
-          <p className="text-stone-400 text-sm font-light mt-1">
-            Track your pipeline and conversions in real time.
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900"
+              style={{ fontFamily: "'Playfair Display', serif" }}>
+              Lead Dashboard
+            </h1>
+            <p className="text-gray-400 text-sm mt-1">
+              Real-time pipeline and conversion tracking
+            </p>
+          </div>
+          <button
+            onClick={fetchLeads}
+            className="px-4 py-2 rounded-lg border border-gray-200 text-sm
+              text-gray-600 hover:border-gray-400 transition duration-200"
+          >
+            Refresh ↻
+          </button>
         </div>
 
-        {/* stats */}
-        <div className="grid grid-cols-5 gap-4 mb-10">
-          {[
-            { label: 'Total Leads', value: total },
-            { label: 'Hot', value: hot, color: 'text-emerald-600' },
-            { label: 'Warm', value: warm, color: 'text-amber-500' },
-            { label: 'Cold', value: cold, color: 'text-stone-400' },
-            { label: 'Booked', value: booked, color: 'text-violet-500' },
-          ].map((stat, i) => (
-            <div key={i} className="bg-white border border-stone-100 shadow-sm p-6">
-              <p className="text-xs tracking-widest uppercase text-stone-300 mb-3">{stat.label}</p>
-              <p className={`text-4xl font-light ${stat.color || 'text-stone-800'}`}
-                style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+        {/* stats grid */}
+        <div className="grid grid-cols-6 gap-4 mb-8">
+          {stats.map((stat, i) => (
+            <div key={i} className="bg-white rounded-xl border border-gray-100
+              shadow-sm p-5">
+              <p className="text-xs text-gray-400 font-medium mb-2">{stat.label}</p>
+              <p className={`text-3xl font-bold ${stat.color}`}
+                style={{ fontFamily: "'Playfair Display', serif" }}>
                 {stat.value}
               </p>
             </div>
@@ -76,29 +88,36 @@ function Dashboard() {
         </div>
 
         {/* pipeline */}
-        <div className="bg-white border border-stone-100 shadow-sm p-8 mb-8">
-          <p className="text-xs tracking-widest uppercase text-stone-400 mb-6">Pipeline Overview</p>
-          <div className="flex flex-col gap-5">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-6">
+          <p className="text-sm font-semibold text-gray-700 mb-5">Pipeline Overview</p>
+          <div className="flex flex-col gap-4">
             <div>
-              <div className="flex justify-between text-xs text-stone-400 mb-2">
+              <div className="flex justify-between text-xs text-gray-400 mb-1.5">
                 <span>Booking Rate</span>
-                <span>{total > 0 ? Math.round((booked / total) * 100) : 0}%</span>
+                <span className="font-medium text-gray-600">
+                  {total > 0 ? Math.round((booked / total) * 100) : 0}%
+                </span>
               </div>
-              <div className="w-full bg-stone-100 h-1">
+              <div className="w-full bg-gray-100 rounded-full h-2">
                 <div
-                  className="bg-amber-500 h-1 transition-all duration-700"
-                  style={{ width: total > 0 ? `${(booked / total) * 100}%` : '0%' }}
+                  className="h-2 rounded-full transition-all duration-700"
+                  style={{
+                    width: total > 0 ? `${(booked / total) * 100}%` : '0%',
+                    backgroundColor: '#1e3a5f'
+                  }}
                 />
               </div>
             </div>
             <div>
-              <div className="flex justify-between text-xs text-stone-400 mb-2">
+              <div className="flex justify-between text-xs text-gray-400 mb-1.5">
                 <span>Conversion Rate</span>
-                <span>{total > 0 ? Math.round((onboarded / total) * 100) : 0}%</span>
+                <span className="font-medium text-gray-600">
+                  {total > 0 ? Math.round((onboarded / total) * 100) : 0}%
+                </span>
               </div>
-              <div className="w-full bg-stone-100 h-1">
+              <div className="w-full bg-gray-100 rounded-full h-2">
                 <div
-                  className="bg-emerald-500 h-1 transition-all duration-700"
+                  className="bg-green-500 h-2 rounded-full transition-all duration-700"
                   style={{ width: total > 0 ? `${(onboarded / total) * 100}%` : '0%' }}
                 />
               </div>
@@ -107,41 +126,36 @@ function Dashboard() {
         </div>
 
         {/* table */}
-        <div className="bg-white border border-stone-100 shadow-sm overflow-hidden">
-          <div className="px-8 py-5 border-b border-stone-50 flex items-center justify-between">
-            <p className="text-xs tracking-widest uppercase text-stone-400">All Leads</p>
-            <button
-              onClick={fetchLeads}
-              className="text-xs tracking-widest uppercase text-amber-500 hover:text-amber-600 transition"
-            >
-              Refresh ↻
-            </button>
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-50">
+            <p className="text-sm font-semibold text-gray-700">All Leads</p>
           </div>
 
           {loading && (
-            <div className="text-center py-20 text-stone-300 text-xs tracking-widest uppercase">
-              Loading...
+            <div className="text-center py-16">
+              <div className="w-6 h-6 border-2 border-blue-900 border-t-transparent
+                rounded-full animate-spin mx-auto mb-3" />
+              <p className="text-gray-400 text-sm">Loading leads...</p>
             </div>
           )}
 
           {error && (
-            <div className="text-center py-20 text-red-300 text-xs tracking-widest uppercase">
-              {error}
-            </div>
+            <div className="text-center py-16 text-red-400 text-sm">{error}</div>
           )}
 
           {!loading && leads.length === 0 && (
-            <div className="text-center py-20 text-stone-300 text-xs tracking-widest uppercase">
-              No leads yet
+            <div className="text-center py-16 text-gray-400 text-sm">
+              No leads yet. Share your form to get started.
             </div>
           )}
 
           {!loading && leads.length > 0 && (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-stone-50">
+                <tr className="bg-gray-50 border-b border-gray-100">
                   {['Name', 'Email', 'Goal', 'Budget', 'Score', 'Status'].map(h => (
-                    <th key={h} className="text-left px-8 py-4 text-xs tracking-widest uppercase text-stone-300 font-normal">
+                    <th key={h} className="text-left px-6 py-3 text-xs font-semibold
+                      text-gray-400 uppercase tracking-wider">
                       {h}
                     </th>
                   ))}
@@ -149,18 +163,20 @@ function Dashboard() {
               </thead>
               <tbody>
                 {leads.map((lead, i) => (
-                  <tr key={i} className="border-b border-stone-50 hover:bg-stone-50 transition">
-                    <td className="px-8 py-4 text-stone-700 font-medium">{lead.name}</td>
-                    <td className="px-8 py-4 text-stone-400 text-xs">{lead.email}</td>
-                    <td className="px-8 py-4 text-stone-500 capitalize text-xs">{lead.goal}</td>
-                    <td className="px-8 py-4 text-stone-500 text-xs">{lead.budget}</td>
-                    <td className="px-8 py-4">
-                      <span className={`text-xs font-semibold tracking-widest uppercase ${scoreBadge[lead.score] || 'text-stone-400'}`}>
+                  <tr key={i} className="border-b border-gray-50 hover:bg-gray-50 transition">
+                    <td className="px-6 py-4 font-medium text-gray-800">{lead.name}</td>
+                    <td className="px-6 py-4 text-gray-400 text-xs">{lead.email}</td>
+                    <td className="px-6 py-4 text-gray-600 capitalize text-xs">{lead.goal}</td>
+                    <td className="px-6 py-4 text-gray-600 text-xs">{lead.budget}</td>
+                    <td className="px-6 py-4">
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full
+                        ${scoreBadge[lead.score] || 'bg-gray-100 text-gray-500'}`}>
                         {lead.score || '—'}
                       </span>
                     </td>
-                    <td className="px-8 py-4">
-                      <span className={`text-xs tracking-widest uppercase ${statusBadge[lead.status] || 'text-stone-400'}`}>
+                    <td className="px-6 py-4">
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full
+                        ${statusBadge[lead.status] || 'bg-gray-100 text-gray-500'}`}>
                         {lead.status || 'new'}
                       </span>
                     </td>

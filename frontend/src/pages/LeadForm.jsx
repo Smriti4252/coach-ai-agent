@@ -8,14 +8,9 @@ function LeadForm() {
   const [error, setError] = useState(null)
 
   const [form, setForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    goal: '',
-    timeline: '',
-    budget: '',
-    format: '',
-    urgency: ''
+    name: '', email: '', phone: '',
+    goal: '', timeline: '', budget: '',
+    format: '', urgency: ''
   })
 
   const handleChange = (e) => {
@@ -28,11 +23,9 @@ function LeadForm() {
     try {
       const res = await api.post('/leads/submit', form)
       const data = res.data
-
       localStorage.setItem('leadId', data.lead_id)
       localStorage.setItem('leadScore', data.score)
       localStorage.setItem('leadName', form.name)
-
       if (data.score === 'HOT') {
         localStorage.setItem('slots', JSON.stringify(data.slots))
         localStorage.setItem('bookingMessage', data.booking_message)
@@ -50,61 +43,55 @@ function LeadForm() {
 
   const isValid = Object.values(form).every(v => v !== '')
 
+  const inputClass = `w-full bg-white text-stone-800 rounded-none px-4 py-3 text-sm
+    outline-none border-b border-stone-200 focus:border-amber-500 transition duration-300
+    placeholder-stone-300`
+
+  const selectClass = `w-full bg-white text-stone-700 rounded-none px-4 py-3 text-sm
+    outline-none border-b border-stone-200 focus:border-amber-500 transition duration-300`
+
+  const labelClass = `text-xs tracking-widest uppercase text-stone-400 mb-2 block`
+
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-8 py-12">
-    <div className="bg-white rounded-2xl p-10 w-full max-w-4xl shadow-sm border border-slate-200">
+    <div className="min-h-screen bg-stone-50 flex items-center justify-center px-6 py-16">
+      <div className="w-full max-w-3xl">
 
         {/* header */}
-        <div className="mb-8">
-          <span className="text-xs font-semibold text-violet-600 uppercase tracking-widest">Coaching Match</span>
-          <h2 className="text-2xl font-bold text-slate-800 mt-1">Find your perfect plan</h2>
-          <p className="text-slate-400 text-sm mt-1">Takes less than 2 minutes. No commitment required.</p>
+        <div className="mb-14 text-center">
+          <p className="text-xs tracking-widest uppercase text-amber-600 mb-3">Begin Your Journey</p>
+          <h1 className="text-5xl font-light text-stone-800 leading-tight mb-4"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            Find Your Perfect<br />Coaching Plan
+          </h1>
+          <p className="text-stone-400 text-sm font-light">
+            Answer a few questions. We'll match you with the right coach and package.
+          </p>
         </div>
 
-        <div className="flex flex-col gap-5">
+        {/* form card */}
+        <div className="bg-white border border-stone-100 shadow-sm p-10">
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-8 mb-8">
             <div>
-            <label className="text-xs font-medium text-slate-500 mb-1 block">Full Name</label>
-              <input
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Jane Doe"
-                className="w-full bg-slate-50 text-slate-800 rounded-lg px-4 py-3 text-sm outline-none border border-slate-200 focus:border-violet-400 focus:bg-white transition"
-              />
+              <label className={labelClass}>Full Name</label>
+              <input name="name" value={form.name} onChange={handleChange}
+                placeholder="Jane Doe" className={inputClass} />
             </div>
             <div>
-              <label className="text-xs font-medium text-slate-500 mb-1 block">Phone</label>
-              <input
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                placeholder="+1 234 567 8900"
-                className="w-full bg-slate-50 text-slate-800 rounded-lg px-4 py-3 text-sm outline-none border border-slate-200 focus:border-violet-400 focus:bg-white transition"
-              />
+              <label className={labelClass}>Email Address</label>
+              <input name="email" value={form.email} onChange={handleChange}
+                placeholder="jane@email.com" className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>Phone Number</label>
+              <input name="phone" value={form.phone} onChange={handleChange}
+                placeholder="+1 234 567 8900" className={inputClass} />
             </div>
           </div>
 
-          <div>
-            <label className="text-xs font-medium text-slate-500 mb-1 block">Email</label>
-            <input
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="jane@email.com"
-              className="w-full bg-slate-50 text-slate-800 rounded-lg px-4 py-3 text-sm outline-none border border-slate-200 focus:border-violet-400 focus:bg-white transition"
-            />
-          </div>
-
-          <div>
-            <label className="text-xs font-medium text-slate-500 mb-1 block">What is your main goal?</label>
-            <select
-              name="goal"
-              value={form.goal}
-              onChange={handleChange}
-              className="w-full bg-slate-50 text-slate-800 rounded-lg px-4 py-3 text-sm outline-none border border-slate-200 focus:border-violet-400 focus:bg-white transition"
-            >
+          <div className="mb-8">
+            <label className={labelClass}>What is your primary goal?</label>
+            <select name="goal" value={form.goal} onChange={handleChange} className={selectClass}>
               <option value="">Select your goal</option>
               <option value="weight loss">Weight Loss & Fitness</option>
               <option value="business growth">Business Growth</option>
@@ -114,15 +101,10 @@ function LeadForm() {
             </select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-8 mb-8">
             <div>
-              <label className="text-xs font-medium text-slate-500 mb-1 block">When to start?</label>
-              <select
-                name="timeline"
-                value={form.timeline}
-                onChange={handleChange}
-                className="w-full bg-slate-50 text-slate-800 rounded-lg px-4 py-3 text-sm outline-none border border-slate-200 focus:border-violet-400 focus:bg-white transition"
-              >
+              <label className={labelClass}>When to start?</label>
+              <select name="timeline" value={form.timeline} onChange={handleChange} className={selectClass}>
                 <option value="">Select timeline</option>
                 <option value="immediately">This week</option>
                 <option value="2 weeks">Within 2 weeks</option>
@@ -131,31 +113,18 @@ function LeadForm() {
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium text-slate-500 mb-1 block">Monthly budget</label>
-              <select
-                name="budget"
-                value={form.budget}
-                onChange={handleChange}
-                className="w-full bg-slate-50 text-slate-800 rounded-lg px-4 py-3 text-sm outline-none border border-slate-200 focus:border-violet-400 focus:bg-white transition"
-              >
+              <label className={labelClass}>Monthly Budget</label>
+              <select name="budget" value={form.budget} onChange={handleChange} className={selectClass}>
                 <option value="">Select budget</option>
                 <option value="under $100">Under $100</option>
-                <option value="$100-$300">$100 - $300</option>
-                <option value="$300-$500">$300 - $500</option>
+                <option value="$100-$300">$100 — $300</option>
+                <option value="$300-$500">$300 — $500</option>
                 <option value="above $500">Above $500</option>
               </select>
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-medium text-slate-500 mb-1 block">Coaching format</label>
-              <select
-                name="format"
-                value={form.format}
-                onChange={handleChange}
-                className="w-full bg-slate-50 text-slate-800 rounded-lg px-4 py-3 text-sm outline-none border border-slate-200 focus:border-violet-400 focus:bg-white transition"
-              >
+              <label className={labelClass}>Coaching Format</label>
+              <select name="format" value={form.format} onChange={handleChange} className={selectClass}>
                 <option value="">Select format</option>
                 <option value="1:1 calls">1:1 Video Calls</option>
                 <option value="group program">Group Program</option>
@@ -163,24 +132,20 @@ function LeadForm() {
                 <option value="hybrid">Hybrid</option>
               </select>
             </div>
-            <div>
-              <label className="text-xs font-medium text-slate-500 mb-1 block">Urgency</label>
-              <select
-                name="urgency"
-                value={form.urgency}
-                onChange={handleChange}
-                className="w-full bg-slate-50 text-slate-800 rounded-lg px-4 py-3 text-sm outline-none border border-slate-200 focus:border-violet-400 focus:bg-white transition"
-              >
-                <option value="">Select urgency</option>
-                <option value="very urgent">Need help now</option>
-                <option value="moderate">Planning ahead</option>
-                <option value="just exploring">Just exploring</option>
-              </select>
-            </div>
+          </div>
+
+          <div className="mb-10">
+            <label className={labelClass}>How urgent is this for you?</label>
+            <select name="urgency" value={form.urgency} onChange={handleChange} className={selectClass}>
+              <option value="">Select urgency</option>
+              <option value="very urgent">Very urgent — I need help now</option>
+              <option value="moderate">Moderate — planning ahead</option>
+              <option value="just exploring">Just exploring options</option>
+            </select>
           </div>
 
           {error && (
-            <p className="text-red-500 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-3">
+            <p className="text-red-400 text-xs tracking-wide mb-6 border-l-2 border-red-300 pl-3">
               {error}
             </p>
           )}
@@ -188,13 +153,14 @@ function LeadForm() {
           <button
             onClick={handleSubmit}
             disabled={!isValid || loading}
-            className="mt-1 w-full bg-violet-600 hover:bg-violet-500 disabled:opacity-40 text-white font-semibold py-3 rounded-lg transition text-sm"
+            className="w-full bg-stone-900 hover:bg-amber-600 disabled:opacity-30
+              text-white text-xs tracking-widest uppercase py-4 transition duration-500 font-medium"
           >
             {loading ? 'Analyzing your profile...' : 'Find My Coaching Plan →'}
           </button>
 
-          <p className="text-center text-xs text-slate-400">
-            No spam. No commitment. Just the right coaching for you.
+          <p className="text-center text-xs text-stone-300 mt-5 tracking-wide">
+            No commitment required · Completely confidential
           </p>
 
         </div>

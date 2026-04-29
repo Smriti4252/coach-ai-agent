@@ -4,6 +4,9 @@ import LeadForm from './pages/LeadForm'
 import Booking from './pages/Booking'
 import Proposal from './pages/Proposal'
 import Dashboard from './pages/Dashboard'
+import ThankYou from './pages/ThankYou'
+
+
 
 function App() {
   return (
@@ -15,6 +18,7 @@ function App() {
           <Route path="/booking" element={<Booking />} />
           <Route path="/proposal" element={<Proposal />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/thankyou" element={<ThankYou />} />
         </Routes>
       </div>
     </BrowserRouter>

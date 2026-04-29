@@ -13,11 +13,8 @@ function Proposal() {
 
   const leadId = localStorage.getItem('leadId')
   const leadName = localStorage.getItem('leadName')
-  const leadScore = localStorage.getItem('leadScore')
 
-  useEffect(() => {
-    fetchProposal()
-  }, [])
+  useEffect(() => { fetchProposal() }, [])
 
   const fetchProposal = async () => {
     setLoading(true)
@@ -36,10 +33,7 @@ function Proposal() {
     setOnboardLoading(true)
     try {
       const res = await api.post(`/leads/onboard/${leadId}`, null, {
-        params: {
-          package: pkg.name,
-          first_session: 'Monday, May 5 at 10:00 AM'
-        }
+        params: { package: pkg.name, first_session: 'Monday, May 5 at 10:00 AM' }
       })
       setOnboarding(res.data)
     } catch (err) {
@@ -49,88 +43,90 @@ function Proposal() {
     }
   }
 
-  const scoreBadge = {
-    HOT: 'bg-green-100 text-green-700',
-    WARM: 'bg-yellow-100 text-yellow-700',
-    COLD: 'bg-slate-100 text-slate-500'
-  }
+  const tiers = ['Essential', 'Signature', 'Elite']
 
   return (
-    <div className="min-h-screen bg-slate-50 px-8 py-12">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-stone-50 px-6 py-16">
+      <div className="max-w-5xl mx-auto">
 
-        {/* header */}
-        <div className="mb-8">
-          <span className="text-xs font-semibold text-violet-600 uppercase tracking-widest">Your Coaching Plan</span>
-          <h2 className="text-2xl font-bold text-slate-800 mt-1">
-            Here's what we recommend, {leadName}
-          </h2>
-          <div className="flex items-center gap-2 mt-2">
-            <span className={`text-xs font-semibold px-3 py-1 rounded-full ${scoreBadge[leadScore] || scoreBadge.WARM}`}>
-              {leadScore} Lead
-            </span>
-          </div>
+        <div className="text-center mb-14">
+          <p className="text-xs tracking-widest uppercase text-amber-600 mb-3">Your Coaching Plan</p>
+          <h1 className="text-5xl font-light text-stone-800 mb-4"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            Curated for You, {leadName}
+          </h1>
+          <p className="text-stone-400 text-sm font-light">
+            Three plans tailored to your goals and timeline. Choose what fits best.
+          </p>
         </div>
 
-        {/* loading */}
         {loading && (
-          <div className="text-center py-20 text-slate-400 text-sm">
-            Generating your personalized packages...
+          <div className="text-center py-24 text-stone-300 text-sm tracking-widest uppercase">
+            Crafting your packages...
           </div>
         )}
 
-        {/* error */}
         {error && (
-          <p className="text-red-500 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-3 mb-6">
+          <p className="text-red-400 text-xs tracking-wide mb-6 border-l-2 border-red-300 pl-3">
             {error}
           </p>
         )}
 
-        {/* packages */}
         {!loading && !onboarding && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {packages.map((pkg, i) => (
               <div
                 key={i}
-                className={`bg-white rounded-2xl p-6 border shadow-sm flex flex-col justify-between transition
-                  ${i === 1 ? 'border-violet-400 ring-2 ring-violet-100' : 'border-slate-200'}`}
+                className={`bg-white border flex flex-col justify-between p-8 transition duration-300
+                  ${i === 1
+                    ? 'border-amber-300 shadow-md'
+                    : 'border-stone-100 shadow-sm hover:border-stone-300'
+                  }`}
               >
-                {i === 1 && (
-                  <div className="mb-3">
-                    <span className="text-xs font-semibold bg-violet-600 text-white px-3 py-1 rounded-full">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-
                 <div>
-                  <h3 className="text-lg font-bold text-slate-800 mb-1">{pkg.name}</h3>
-                  <p className="text-sm text-slate-400 mb-1">{pkg.duration}</p>
-                  <p className="text-sm text-slate-400 mb-4">{pkg.format}</p>
+                  {i === 1 && (
+                    <p className="text-xs tracking-widest uppercase text-amber-600 mb-4">
+                      Most Popular
+                    </p>
+                  )}
+                  <p className="text-xs tracking-widest uppercase text-stone-300 mb-2">
+                    {tiers[i]}
+                  </p>
+                  <h3 className="text-2xl font-light text-stone-800 mb-1"
+                    style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                    {pkg.name}
+                  </h3>
+                  <p className="text-xs text-stone-400 mb-1">{pkg.duration}</p>
+                  <p className="text-xs text-stone-400 mb-6">{pkg.format}</p>
 
-                  <ul className="flex flex-col gap-2 mb-6">
-                    {pkg.deliverables && pkg.deliverables.map((item, j) => (
-                      <li key={j} className="flex items-start gap-2 text-sm text-slate-600">
-                        <span className="text-violet-500 mt-0.5">✓</span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="border-t border-stone-100 pt-6 mb-6">
+                    <ul className="flex flex-col gap-3">
+                      {pkg.deliverables && pkg.deliverables.map((item, j) => (
+                        <li key={j} className="flex items-start gap-3 text-sm text-stone-600 font-light">
+                          <span className="text-amber-500 text-xs mt-1">—</span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
 
                 <div>
-                  <p className="text-xl font-bold text-slate-800 mb-4">{pkg.price}</p>
+                  <p className="text-3xl font-light text-stone-800 mb-6"
+                    style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                    {pkg.price}
+                  </p>
                   <button
                     onClick={() => handleOnboard(pkg)}
                     disabled={onboardLoading}
-                    className={`w-full py-3 rounded-lg text-sm font-semibold transition
+                    className={`w-full py-3 text-xs tracking-widest uppercase transition duration-500
                       ${i === 1
-                        ? 'bg-violet-600 hover:bg-violet-500 text-white'
-                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        ? 'bg-stone-900 hover:bg-amber-600 text-white'
+                        : 'border border-stone-200 hover:border-stone-900 text-stone-600 hover:text-stone-900'
                       }`}
                   >
                     {onboardLoading && selected?.name === pkg.name
-                      ? 'Starting...'
+                      ? 'Processing...'
                       : 'Choose This Plan'
                     }
                   </button>
@@ -140,35 +136,42 @@ function Proposal() {
           </div>
         )}
 
-        {/* onboarding result */}
         {onboarding && (
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
-            <div className="text-center mb-8">
-              <div className="text-5xl mb-3">🎉</div>
-              <h3 className="text-2xl font-bold text-slate-800">Welcome aboard, {leadName}!</h3>
-              <p className="text-slate-400 text-sm mt-2">{onboarding.welcome_message}</p>
+          <div className="bg-white border border-stone-100 shadow-sm p-12 max-w-2xl mx-auto">
+            <div className="text-center mb-10">
+              <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200
+                flex items-center justify-center mx-auto mb-6 text-amber-600 font-light text-xl">
+                ✓
+              </div>
+              <h2 className="text-3xl font-light text-stone-800 mb-3"
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                Welcome, {leadName}
+              </h2>
+              <p className="text-stone-400 text-sm font-light leading-relaxed">
+                {onboarding.welcome_message}
+              </p>
             </div>
 
-            <div>
-              <p className="text-sm font-semibold text-slate-700 mb-4">Your onboarding checklist:</p>
+            <div className="border-t border-stone-100 pt-8">
+              <p className="text-xs tracking-widest uppercase text-stone-400 mb-6">
+                Your Onboarding Checklist
+              </p>
               <div className="flex flex-col gap-3">
                 {onboarding.checklist && onboarding.checklist.map((step, i) => (
-                  <div
-                    key={i}
-                    className="flex items-start gap-3 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3"
-                  >
-                    <span className="bg-violet-100 text-violet-600 text-xs font-bold px-2 py-1 rounded-full">
-                      {i + 1}
+                  <div key={i} className="flex items-start gap-4 py-3 border-b border-stone-50">
+                    <span className="text-xs text-amber-500 font-medium mt-0.5 w-5">
+                      {String(i + 1).padStart(2, '0')}
                     </span>
-                    <p className="text-sm text-slate-600">{step}</p>
+                    <p className="text-sm text-stone-600 font-light">{step}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             <button
-              onClick={() => navigate('/dashboard')}
-              className="mt-8 w-full bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-lg transition text-sm"
+              onClick={() => navigate('/thankyou')}
+              className="mt-10 w-full bg-stone-900 hover:bg-amber-600 text-white
+                text-xs tracking-widest uppercase py-4 transition duration-500"
             >
               Go to Dashboard →
             </button>

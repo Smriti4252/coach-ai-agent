@@ -35,9 +35,10 @@ def generate_time_slots() -> list:
     return slots
 
 
-def suggest_slots(lead_data: dict) -> dict:
+def suggest_slots(lead_data: dict, slots: list = None) -> dict:
 
-    slots = generate_time_slots()
+    if slots is None:
+        slots = generate_time_slots()
     slots_text = "\n".join(f"- {s}" for s in slots)
 
     prompt = PromptTemplate(

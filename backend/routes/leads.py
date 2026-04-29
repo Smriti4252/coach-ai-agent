@@ -9,6 +9,7 @@ from agents.onboarding_agent import (
     generate_onboarding_checklist,
     generate_followup_message
 )
+from utils.calendar import get_free_slots, book_slot
 
 router = APIRouter()
 
@@ -17,7 +18,6 @@ router = APIRouter()
 async def submit_lead(lead: LeadForm):
     db = get_db()
 
-    # convert form data to dict
     lead_data = lead.model_dump()
 
     # run qualification agent
@@ -30,9 +30,10 @@ async def submit_lead(lead: LeadForm):
     inserted = await db.leads.insert_one(lead_data)
     lead_data["_id"] = str(inserted.inserted_id)
 
-    # if HOT lead, suggest booking slots right away
+    # if HOT lead, get real calendar slots
     if result["score"] == "HOT":
-        slots_result = suggest_slots(lead_data)
+        real_slots = get_free_slots()
+        slots_result = suggest_slots(lead_data, real_slots)
         return {
             "message": "Lead submitted and qualified",
             "score": result["score"],
@@ -53,7 +54,7 @@ async def submit_lead(lead: LeadForm):
 
 
 @router.post("/book/{lead_id}")
-async def book_slot(lead_id: str, chosen_slot: str):
+async def book_slot_route(lead_id: str, chosen_slot: str):
     db = get_db()
     from bson import ObjectId
 
@@ -61,19 +62,32 @@ async def book_slot(lead_id: str, chosen_slot: str):
     if not lead:
         raise HTTPException(status_code=404, detail="Lead not found")
 
-    # confirm the booking
+    # book on real Google Calendar
+    calendar_result = book_slot(
+        name=lead.get("name"),
+        email=lead.get("email"),
+        slot_str=chosen_slot
+    )
+
+    # confirm message from AI
     confirmation = confirm_booking(lead, chosen_slot)
 
-    # update lead status in db
+    # update lead in db
     await db.leads.update_one(
         {"_id": ObjectId(lead_id)},
-        {"$set": {"booked_slot": chosen_slot, "status": "booked"}}
+        {"$set": {
+            "booked_slot": chosen_slot,
+            "status": "booked",
+            "calendar_event_id": calendar_result.get("event_id"),
+            "calendar_event_link": calendar_result.get("event_link")
+        }}
     )
 
     return {
         "message": "Slot booked successfully",
         "slot": chosen_slot,
-        "confirmation_message": confirmation
+        "confirmation_message": confirmation,
+        "calendar_link": calendar_result.get("event_link")
     }
 
 
